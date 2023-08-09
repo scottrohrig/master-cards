@@ -1,0 +1,23 @@
+[
+  {
+    "id": "0",
+    "concept": "hello cards",
+    "definition": "a greeting for the flashcards",
+    "categoryId": "779",
+    "categories": ["356"]
+  },
+  {
+    "id": "1",
+    "concept": "quit vim",
+    "definition": ":q<CR> colon q enter",
+    "categoryId": "779",
+    "categories": ["356"]
+  },
+  {
+    "id": "2",
+    "concept": "find my glasses",
+    "definition": "are they on your head?",
+    "categoryId": "001",
+    "categories": ["356"]
+  }
+]
