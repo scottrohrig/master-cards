@@ -25,8 +25,8 @@ const ConceptList = () => {
   }, [data]);
 
   return (
-    <div className="border rounded border-sky-400 bg-sky-100">
-      <h2 onClick={() => { navigate('/categories') }}>{category.title}</h2>
+    <div className="border rounded border-sky-400 bg-sky-100 p-2">
+      <h2 className="font-bold text-xl text-amber-600" onClick={() => { navigate('/categories') }}>{category.title}</h2>
       <SetList categoryId={category.id} />
     </div>
   );
@@ -34,7 +34,7 @@ const ConceptList = () => {
 
 export default ConceptList;
 
-export function Button(props){
+export function Button(props) {
   return (
     <button {...props}
       className={`font-bold p-2 bg-sky-400 rounded ${props.className}`}
@@ -63,7 +63,8 @@ function SetList({ categoryId }) {
   return (
     <div className="set-list">
       <Button tabIndex="0" onClick={handleClick}>new concept</Button>
-      <ul className="flex flex-col gap-3 mt-2">
+      <ConceptListHead />
+      <ul className="flex flex-col gap-3">
         {isLoading ? <>loading...</> : (
           <>
             {concepts && concepts.length > 0 && concepts.map((item, i) => (
@@ -73,6 +74,15 @@ function SetList({ categoryId }) {
         )}
       </ul>
     </div>
+  );
+}
+
+function ConceptListHead() {
+  return (
+    <li className='flex w-full mt-2'>
+      <p className='basis-[40ch]'>CONCEPT</p>
+      <p className='basis-full'>DEFINITION</p>
+    </li>
   );
 }
 
@@ -103,35 +113,35 @@ function ConceptListItem({ item, activeItemId, setActiveItemId }) {
       <li className="selected outline outline-1 rounded flex justify-between bg-sky-400">
         {/* <span>{item.id}</span> */}
         <div className="concept basis-[40ch] text-vertical">
-          <input value={concept} className="w-full"
+          <input value={concept} className="w-full px-2 py-1"
             onChange={(e) => setConcept(e.target.value)}
           />
         </div>
         <div className="definition flex basis-full">
-          <input value={definition} className="basis-full"
+          <input value={definition} className="basis-full px-2 py-1"
             onChange={(e) => setDefinition(e.target.value)}
           />
           <span className="bg-sky-400 min-w-[32px] text-center"
-          tabIndex="0" onKeyDown={(e) => {
-            if (['enter', ' '].includes(e.key)) handleSave()
-          }} onClick={handleSave}>ⓧ</span>
+            tabIndex="0" onKeyDown={(e) => {
+              if (['enter', ' '].includes(e.key)) handleSave()
+            }} onClick={handleSave}>ⓧ</span>
         </div>
       </li>
     )
   }
   return (
-    <li onClick={handleEdit} className="concept-li flex items-center justify-between bg-sky-400">
+    <li onClick={handleEdit} className="concept-li flex rounded items-center justify-between bg-sky-400">
       {/* <span>{item.id}</span> */}
       <div className="concept basis-[40ch] items-center">
-        <p>
+        <p className='px-2 py-1'>
           {concept}
         </p>
       </div>
       <div className="definition flex basis-full">
-        <p className="basis-full">
+        <p className="basis-full px-2 py-1">
           {definition}
         </p>
-        <span className="bg-sky-400 min-w-[32px] text-center" tabIndex="0">✎</span>
+        <span className=" min-w-[32px] text-center" tabIndex="0">✎</span>
       </div>
     </li>
   );
