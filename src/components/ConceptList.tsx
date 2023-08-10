@@ -25,7 +25,7 @@ const ConceptList = () => {
   }, [data]);
 
   return (
-    <div className="">
+    <div className="border rounded border-sky-400 bg-sky-100">
       <h2 onClick={() => { navigate('/categories') }}>{category.title}</h2>
       <SetList categoryId={category.id} />
     </div>
@@ -34,6 +34,15 @@ const ConceptList = () => {
 
 export default ConceptList;
 
+function Button(props){
+  return (
+    <button {...props}
+      className="p-2 bg-sky-400 rounded"
+    >
+      {props.children}
+    </button>
+  );
+}
 
 function SetList({ categoryId }) {
   const [concepts, setConcepts] = useState(undefined);
@@ -50,10 +59,11 @@ function SetList({ categoryId }) {
     const newConcept = { id: '', concept: '', definition: '', categoryId }
     addConceptMutation.mutate(newConcept);
   };
+  
   return (
     <div className="set-list">
-      <button tabIndex="0" onClick={handleClick}>new concept</button>
-      <ul className="flex flex-col gap-2">
+      <Button tabIndex="0" onClick={handleClick}>new concept</Button>
+      <ul className="flex flex-col gap-3 mt-2">
         {isLoading ? <>loading...</> : (
           <>
             {concepts && concepts.length > 0 && concepts.map((item, i) => (
@@ -90,18 +100,19 @@ function ConceptListItem({ item, activeItemId, setActiveItemId }) {
 
   if (editing) {
     return (
-      <li className="selected outline-2 rounded">
+      <li className="selected outline outline-1 rounded flex justify-between bg-sky-400">
         {/* <span>{item.id}</span> */}
-        <div className="concept">
-          <input value={concept}
+        <div className="concept basis-[40ch] text-vertical">
+          <input value={concept} className="w-full"
             onChange={(e) => setConcept(e.target.value)}
           />
         </div>
-        <div className="definition">
-          <input value={definition}
+        <div className="definition flex basis-full">
+          <input value={definition} className="basis-full"
             onChange={(e) => setDefinition(e.target.value)}
           />
-          <span tabIndex="0" onKeyDown={(e) => {
+          <span className="bg-sky-400 min-w-[32px] text-center"
+          tabIndex="0" onKeyDown={(e) => {
             if (['enter', ' '].includes(e.key)) handleSave()
           }} onClick={handleSave}>ⓧ</span>
         </div>
@@ -109,18 +120,18 @@ function ConceptListItem({ item, activeItemId, setActiveItemId }) {
     )
   }
   return (
-    <li onClick={handleEdit} className="concept-li bg-sky-100">
+    <li onClick={handleEdit} className="concept-li flex items-center justify-between bg-sky-400">
       {/* <span>{item.id}</span> */}
-      <div className='concept'>
+      <div className="concept basis-[40ch] items-center">
         <p>
           {concept}
         </p>
       </div>
-      <div className='definition'>
-        <p>
+      <div className="definition flex basis-full">
+        <p className="basis-full">
           {definition}
         </p>
-        <span tabIndex="0">✎</span>
+        <span className="bg-sky-400 min-w-[32px] text-center" tabIndex="0">✎</span>
       </div>
     </li>
   );

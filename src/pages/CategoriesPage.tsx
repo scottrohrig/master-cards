@@ -39,7 +39,7 @@ const CategoriesForm = () => {
         <InputGroup>
           <label htmlFor="category-title">Title</label>
           <input
-            className="bg-amber-600"
+            className="bg-amber-400"
             id="category-title"
             name="title"
             value={title}
@@ -172,7 +172,7 @@ const CategoriesList = () => {
 
 const CategoriesPage = () => {
   return (
-    <div className="page border border-amber-600 p-4 rounded text-amber-600">
+    <div className="page border border-amber-400 p-4 rounded text-amber-600">
       <h2 className="font-bold text-xl text-sky-800">Categories Page</h2>
       <CategoriesForm />
       <CategoriesList />
