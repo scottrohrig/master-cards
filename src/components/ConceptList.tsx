@@ -34,10 +34,10 @@ const ConceptList = () => {
 
 export default ConceptList;
 
-function Button(props){
+export function Button(props){
   return (
     <button {...props}
-      className="p-2 bg-sky-400 rounded"
+      className={`font-bold p-2 bg-sky-400 rounded ${props.className}`}
     >
       {props.children}
     </button>
@@ -59,7 +59,7 @@ function SetList({ categoryId }) {
     const newConcept = { id: '', concept: '', definition: '', categoryId }
     addConceptMutation.mutate(newConcept);
   };
-  
+
   return (
     <div className="set-list">
       <Button tabIndex="0" onClick={handleClick}>new concept</Button>
