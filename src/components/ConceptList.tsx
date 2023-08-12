@@ -110,7 +110,7 @@ function ConceptListItem({ item, activeItemId, setActiveItemId }) {
 
   if (editing) {
     return (
-      <li className="selected outline outline-1 rounded flex justify-between bg-sky-400">
+      <li className="selected outline outline-1 rounded flex justify-between border border-sky-400">
         {/* <span>{item.id}</span> */}
         <div className="concept basis-[40ch] text-vertical">
           <input value={concept} className="w-full px-2 py-1"
@@ -130,7 +130,7 @@ function ConceptListItem({ item, activeItemId, setActiveItemId }) {
     )
   }
   return (
-    <li onClick={handleEdit} className="concept-li flex rounded items-center justify-between bg-sky-400">
+    <li onClick={handleEdit} className="concept-li flex rounded items-center justify-between border border-sky-400 text-sky-700">
       {/* <span>{item.id}</span> */}
       <div className="concept basis-[40ch] items-center">
         <p className='px-2 py-1'>

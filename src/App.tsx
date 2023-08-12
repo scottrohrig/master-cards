@@ -11,7 +11,7 @@ import {
   useQuery, useMutation, QueryClient, QueryClientProvider,
 } from '@tanstack/react-query';
 import CategoriesPage from './pages/CategoriesPage';
-import SetsPage from './components/CategoriesPage';
+import QuizPage from './pages/QuizPage';
 import ConceptList, { loader as categoryLoader } from './components/ConceptList';
 
 import ErrorPage from './components/ErrorPage';
@@ -35,8 +35,8 @@ const routerOpts = [
         element: <CategoriesPage />,
       },
       {
-        path: 'sets',
-        element: <SetsPage />,
+        path: 'Quiz',
+        element: <QuizPage />,
       },
       {
         path: 'categories/:categoryId',
@@ -57,7 +57,7 @@ export default function Root() {
 
 // URL: / 
 function App() {
-  const navPages = ['categories', 'sets', 'error']
+  const navPages = ['categories', 'quiz', 'error']
   return (
     <main className="border-l-4 border-sky-400 min-h-screen">
       <Header pages={navPages} />

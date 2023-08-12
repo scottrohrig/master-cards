@@ -6,6 +6,7 @@ import {
 } from '../api';
 import '../App.css';
 import { Button } from '../components/ConceptList';
+import Page from './Page';
 
 const fetchCategories = async () => {
   // Fetch the categories from your "API" here
@@ -24,7 +25,15 @@ function InputGroup(props) {
 }
 
 export function Input(props) {
-  return <input {...props} className={`${props.className} border basis-full rounded py-[2px] px-[4px] text-xs outline-sky-500`} />
+  return <input {...props} className={`
+    ${props.className}
+    border
+    rounded
+    outline-sky-500
+    py-[2px] px-[4px]
+    basis-full
+    text-xs
+  `} />
 }
 
 const CategoriesForm = () => {
@@ -45,7 +54,7 @@ const CategoriesForm = () => {
         <InputGroup>
           <label htmlFor="category-edit-title" className="basis-[13ch]">Title</label>
           <Input
-            // className="border border-amber-400 rounded w-full"
+            className=" border-amber-400 "
             id="category-edit-title"
             name="title"
             value={title}
@@ -55,7 +64,7 @@ const CategoriesForm = () => {
         <InputGroup>
           <label htmlFor="category-edit-desc" className="basis-[13ch]">Description</label>
           <Input
-            // className="border border-amber-400 rounded w-full"
+            className=" border-amber-400 "
             id="category-edit-desc"
             name="description"
             value={description}
@@ -91,6 +100,7 @@ const CategoryLiEdit = ({
             id="category-title"
             name="title"
             value={title}
+            className=" border-amber-400 "
             onChange={(e) => setTitle(e.target.value)}
           />
         </InputGroup>
@@ -100,13 +110,14 @@ const CategoryLiEdit = ({
             id="category-desc"
             name="description"
             value={description}
+            className=" border-amber-400 "
             onChange={(e) => setDescription(e.target.value)}
           />
         </InputGroup>
       </div>
       <div className="action-menu flex gap-1">
         <Button className="bg-zinc-50 border border-sky-400 p-[4px]" onClick={onCancel}>Cancel</Button>
-        <Button  className="text-zinc-50 p-[4px]"  onClick={handleSave}>Save</Button>
+        <Button className="text-zinc-50 p-[4px]" onClick={handleSave}>Save</Button>
       </div>
     </li>
   )
@@ -181,11 +192,11 @@ const CategoriesList = () => {
 
 const CategoriesPage = () => {
   return (
-    <div className="page min-h-[calc(100vh-56px)] border border-amber-400 p-4 rounded text-amber-600">
+    <Page >
       <h2 className="font-bold text-2xl text-sky-800">Categories Page</h2>
       <CategoriesForm />
       <CategoriesList />
-    </div>
+    </Page>
   );
 };
 
