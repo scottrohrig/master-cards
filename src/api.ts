@@ -150,3 +150,50 @@ export const useUpdateConcept = () => {
     }
   });
 };
+
+export const getStats=()=>{
+  const statsJson = localStorage.getItem('stats')
+  if (statsJson) {
+    return JSON.parse(statsJson);
+  }
+  return [];
+};
+
+const addStats = (conceptId) => {
+  const statlist = getStats();
+  const newStat = {
+    id: randId(),
+    conceptId,
+    countAccurate: 0,
+    totalAttempts: 0,
+  }
+  const newStatlist = [
+    ...statlist,
+    newStat
+  ];
+  localStorage.setItem('stats', JSON.stringify(newStatlist));
+};
+
+export const useAddStats = () => {
+  return useMutation(addStats, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['statlist'])
+    }
+  })
+}
+
+export const getOrAddStat = (conceptId) => {
+  const statlist = getStats();
+  let filteredStatList = statlist.filter((item) => item.conceptId === conceptId);
+  
+  if (filteredStatList.length === 0) {
+    addStats(conceptId);
+    const updatedStatList = getStats();
+    filteredStatList = updatedStatList.filter((item) => item.conceptId === conceptId);
+  }
+  
+  return filteredStatList[filteredStatList.length - 1];
+};
+
+
+

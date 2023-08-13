@@ -76,7 +76,9 @@ function Header({ pages }: any) {
     <header className="flex justify-between bg-sky-400 px-4 py-2">
       <div className="flex gap-2">
         <div className="">LOGO</div>
-        <div className="text-zinc-50 pointer" onClick={()=>{navigate('/categories')}}>BRAND</div>
+        <div className="text-zinc-50 pointer" onClick={
+          () => { navigate('/categories') }
+        }>BRAND</div>
       </div>
       <nav>
         <ul className="flex gap-2">

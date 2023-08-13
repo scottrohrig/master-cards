@@ -1,14 +1,25 @@
 import { useQuery } from '@tanstack/react-query';
 import React, { useState } from 'react';
-import { getCategories } from '../api';
+import {
+  getCategories,
+  getStats,
+  useAddStats,
+  getOrAddStat,
+  getConceptsByCategoryId,
+} from '../api';
 import { Button } from '../components/ConceptList';
 import Page from './Page';
 
 export default function QuizPage() {
-  const [category, setCategory] = useState(undefined);
-  const { data: categories, isLoading } = useQuery(['categories'], getCategories);
+  const [category, setCategory] = useState(null);
+  const { data: categories, isLoading: isCategoriesLoading } = useQuery(['categories'], getCategories);
+  const { data: cards, isLoading: isCardsLoading} = useQuery(
+    ['concepts', category?.id],
+    () => getConceptsByCategoryId(category?.id || 0),
+    { enabled: !!category }
+  );
   const [selectedCardId, setSelectedCardId] = useState(0);
-  const [cards, setCards] = useState([
+  const [tempCards, setCards] = useState([
     { id: '2', concept: 'useMutation', definition: 'A hook that takes a key and a callback and returns a mutation object. The mutation object is used to update the state given a payload.' },
     { id: '3', concept: 'useQuery', definition: 'A hook that takes a key and a callback a response object { data, isLoading, error }.' },
     { id: '4', concept: 'poop', definition: 'A smelly pile of waste' },
@@ -26,10 +37,10 @@ export default function QuizPage() {
           id='category-select'
           name='category-select'
           placeholder='Select a Category'
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
+          // value={category}
+          // onChange={(e) => setCategory(e.target.value)}
         >
-          {!isLoading && categories.map(c => (
+          {!isCategoriesLoading && categories.map(c => (
             <option
               value={c.title}
               key={c.title}
@@ -57,6 +68,7 @@ function Card({ item, increment, idx }) {
   const [state, setState] = useState(true);
   const [debug, setDebug] = useState(false);
   const stats = { conceptId: '2', countAccurate: 2, totalAttempts: 3 };
+  const { data: stat, isLoading } = useQuery(['stat', item.id], () => getOrAddStat(item.id));
   const baseDebug = 'border-2 rounded '
   const bodyDebug = debug && baseDebug + 'border-orange-400'
   const accDebug = debug && baseDebug + 'border-green-400'
@@ -66,7 +78,11 @@ function Card({ item, increment, idx }) {
   };
   return (
     <div
-      className={`mx-auto my-2 w-96 h-48 p-4 border border-b-4 rounded flex text-amber-500
+      className={`
+        mx-auto my-2 p-4 flex
+        h-96 sm:w-96 sm:h-64
+        text-2xl sm:text-lg text-amber-500
+        border border-b-4 rounded 
         ${state ? 'border-sky-400' : 'border-amber-400'}
       `}
     >
@@ -85,7 +101,13 @@ function Card({ item, increment, idx }) {
       </div>
       <div className="flex flex-col justify-between">
         <div className={`flex justify-center items-center ${accDebug}`} onClick={() => setDebug(!debug)}>
-          <p>Score: <span>{Math.floor((stats.countAccurate / stats.totalAttempts) * 100)}%</span></p>
+          <p>Score:
+            {' '}
+            {!isLoading && stat && <span>{Math.floor((stat.countAccurate / stat.totalAttempts) * 100)}%</span>}
+          </p>
+        </div>
+        <div className='break-all'>
+          {!isLoading && stat && String(JSON.stringify(stat))}
         </div>
         <Button
           className="text-zinc-50 uppercase"
