@@ -1,13 +1,13 @@
+import { useQuery } from '@tanstack/react-query';
 import React, { useEffect, useState } from 'react';
-import { useQuery, useMutation } from '@tanstack/react-query';
-import { useNavigate, useLoaderData } from 'react-router-dom';
+import { useLoaderData, useNavigate } from 'react-router-dom';
 import {
-  getCategories,
   getCategory,
   getConcepts,
   useAddConcept,
-  useUpdateConcept,
+  useUpdateConcept
 } from '../api';
+import Button from '../components/Button';
 // import SetList from './SetList';
 
 export function loader({ params }) {
@@ -33,16 +33,6 @@ const ConceptList = () => {
 };
 
 export default ConceptList;
-
-export function Button(props) {
-  return (
-    <button {...props}
-      className={`font-bold p-2 bg-sky-400 rounded ${props.className}`}
-    >
-      {props.children}
-    </button>
-  );
-}
 
 function SetList({ categoryId }) {
   const [concepts, setConcepts] = useState(undefined);

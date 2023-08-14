@@ -1,11 +1,11 @@
-import React from 'react';
 import { useQuery } from '@tanstack/react-query';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import '../App.css';
 import {
   getCategories, useAddCategory, useDeleteMutation, useUpdateCategory
 } from '../api';
-import '../App.css';
-import { Button } from '../components/ConceptList';
+import Button from '../components/Button';
 import Page from './Page';
 
 const fetchCategories = async () => {
