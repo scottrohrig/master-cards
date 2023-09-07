@@ -71,6 +71,7 @@ function App() {
 }
 
 function Header({ pages }: any) {
+  const [toggled, setMenuToggled] = React.useState(false);
   const navigate = useNavigate();
   return (
     <header className="flex justify-between bg-sky-400 px-4 py-2">
@@ -81,7 +82,20 @@ function Header({ pages }: any) {
         }>BRAND</div>
       </div>
       <nav>
-        <ul className="flex gap-2">
+        <ul className="none md:flex gap-2">
+          {pages.map(
+            (p: any) => <Link
+              className="text-sky-700"
+              to={`/${p}`}
+              key={p}
+            >
+              {p}
+            </Link>
+          )}
+        </ul>
+        <ul
+          className="absolute right-0 top-10 flex flex-col min-h-[100vh] w-1/2 bg-white"
+          >
           {pages.map(
             (p: any) => <Link
               className="text-sky-700"
