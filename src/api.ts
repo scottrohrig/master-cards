@@ -1,11 +1,6 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient } from "./App";
-
-interface Category {
-  id: string;
-  title: string;
-  description: string;
-}
+import { Category, Concept, Stat } from "./types";
 
 const randId = () => Math.floor(Math.random() * 999) + 1
 
@@ -39,11 +34,11 @@ export const useAddCategory = () => {
   })
 };
 
-export const deleteCategory = (id) => {
+export const deleteCategory = (id:string) => {
   try {
     const categories = getCategories();
     const updatedCategories = categories.filter(
-      (c) => c.id !== id,
+      (c:Category) => c.id !== id,
     );
     localStorage.setItem(
       'categories',
@@ -62,12 +57,12 @@ export const useDeleteMutation = () => {
   })
 };
 
-const updateCategory = (editedItem) => {
+const updateCategory = (editedItem: Category) => {
   try {
     const id = editedItem.id
     const categories = getCategories();
     const updatedCategories = categories.map(
-      (c) => c.id === id ? { id, ...editedItem } : c
+      (c:Category) => c.id === id ? { ...editedItem } : c
     )
     localStorage.setItem('categories', JSON.stringify(updatedCategories));
   } catch (err) {
@@ -83,14 +78,14 @@ export const useUpdateCategory = () => {
   });
 };
 
-export const getCategory = (id) => {
-  const category = getCategories().filter(c => c.id === id).pop();
+export const getCategory = (id: string) => {
+  const category = getCategories().filter((c:Category) => c.id === id).pop();
   return category;
 };
 
 export const getConcepts = () => {
   const concepts = localStorage.getItem('concepts');
-  
+
   if (concepts) {
     const temp = JSON.parse(concepts);
     return temp;
@@ -103,13 +98,13 @@ const fetchDefaultConcepts = () => {
         .then(res => res.json())
 }
 
-export const getConceptsByCategoryId = (categoryId) => {
+export const getConceptsByCategoryId = (categoryId:string) => {
   const concepts = localStorage.getItem('concepts');
-  return concepts ? JSON.parse(concepts).filter(c => c.categoryId === categoryId) : [];
+  return concepts ? JSON.parse(concepts).filter((c:Concept) => c.categoryId === categoryId) : [];
 }
 
-export const getConcept = (id) => {
-  const concept = getConcepts().filter(c => c.id === id).pop();
+export const getConcept = (id:string) => {
+  const concept = getConcepts().filter((c:Concept) => c.id === id).pop();
   return concept;
 };
 
@@ -134,9 +129,9 @@ export const useAddConcept = () => {
   })
 };
 
-const editConcept = (concept) => {
+const editConcept = (concept:Concept) => {
   const concepts = getConcepts();
-  const updatedConcepts = concepts.map(c=> c.id === concept.id ? concept : c)
+  const updatedConcepts = concepts.map((c:Concept) => c.id === concept.id ? concept : c)
   localStorage.setItem(
     'concepts',
     JSON.stringify(updatedConcepts),
@@ -159,7 +154,7 @@ export const getStats=()=>{
   return [];
 };
 
-const addStats = (conceptId) => {
+const addStats = (conceptId:string) => {
   const statlist = getStats();
   const newStat = {
     id: randId(),
@@ -182,18 +177,15 @@ export const useAddStats = () => {
   })
 }
 
-export const getOrAddStat = (conceptId) => {
+export const getOrAddStat = (conceptId:string) => {
   const statlist = getStats();
-  let filteredStatList = statlist.filter((item) => item.conceptId === conceptId);
-  
+  let filteredStatList = statlist.filter((item:Stat) => item.conceptId === conceptId);
+
   if (filteredStatList.length === 0) {
     addStats(conceptId);
     const updatedStatList = getStats();
-    filteredStatList = updatedStatList.filter((item) => item.conceptId === conceptId);
+    filteredStatList = updatedStatList.filter((item:Stat) => item.conceptId === conceptId);
   }
-  
+
   return filteredStatList[filteredStatList.length - 1];
 };
-
-
-

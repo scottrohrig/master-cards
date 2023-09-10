@@ -2,11 +2,18 @@ export type Concept = {
   id: string;
   concept: string;
   definition: string;
-  categoryId: number;
+  categoryId: string;
 };
 
 export type Category = {
-  id: number;
+  id: string;
   title: string;
   description: string;
 };
+
+export type Stat = {
+  id: number;
+  conceptId: string;
+  countAccurate: number;
+  totalAttempts: number;
+}

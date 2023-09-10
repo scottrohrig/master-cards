@@ -8,20 +8,21 @@ import {
   useUpdateConcept
 } from '../api';
 import Button from '../components/Button';
+import { Category, Concept } from '../types';
 // import SetList from './SetList';
 
-export function loader({ params }) {
+export function loader({ params }: { params: { categoryId: string } }) {
   const category = getCategory(params.categoryId);
   return { category };
 }
 
 const ConceptList = () => {
-  const { category } = useLoaderData();
+  const { category } = useLoaderData() as { category: Category };
   const { data, isLoading } = useQuery(['concepts'], getConcepts);
   const [concepts, setConcepts] = React.useState(null);
   const navigate = useNavigate();
   React.useEffect(() => {
-    if (data) setConcepts(data.filter(c => c.categoryId === category.id));
+    if (data) setConcepts(data.filter((c:Concept) => c.categoryId === category.id));
   }, [data]);
 
   return (
@@ -34,15 +35,15 @@ const ConceptList = () => {
 
 export default ConceptList;
 
-function SetList({ categoryId }) {
-  const [concepts, setConcepts] = useState(undefined);
+function SetList({ categoryId }: { categoryId: string }) {
+  const [concepts, setConcepts] = useState([]);
   const [activeItemId, setActiveItemId] = useState('');
   const navigate = useNavigate();
   const { data, isLoading } = useQuery(['concepts'], getConcepts);
   const addConceptMutation = useAddConcept();
   useEffect(() => {
     if (data) {
-      const filteredConcepts = data.filter(item => item.categoryId === categoryId);
+      const filteredConcepts = data.filter((item:Concept) => item.categoryId === categoryId);
       setConcepts(filteredConcepts);
     }
   }, [data])
@@ -54,16 +55,16 @@ function SetList({ categoryId }) {
   return (
     <div className="set-list">
       <div className="flex justify-end gap-1">
-      <Button tabIndex="0" className="text-white" onClick={handleClick}>new concept</Button>
-      {/* <Button className="bg-transparent text-sky-500 border-spacing-1 border-2 rounded-md border-sky-400 p-[4px]" tabIndex="0" onClick={()=> {navigate('/quiz')}}>Quiz Yourself</Button> */}
-      <Button className="bg-transparent border-2 border-sky-400 text-amber-500 p-[4px]" tabIndex="0" onClick={()=> {navigate('/quiz')}}>Quiz Yourself</Button>
+        <Button tabIndex={0} className="text-white" onClick={handleClick}>new concept</Button>
+        {/* <Button className="bg-transparent text-sky-500 border-spacing-1 border-2 rounded-md border-sky-400 p-[4px]" tabIndex={0} onClick={()=> {navigate('/quiz')}}>Quiz Yourself</Button> */}
+        <Button className="bg-transparent border-2 border-sky-400 text-amber-500 p-[4px]" tabIndex={0} onClick={() => { navigate('/quiz') }}>Quiz Yourself</Button>
 
       </div>
       <ConceptListHead />
       <ul className="flex flex-col gap-3">
         {isLoading ? <>loading...</> : (
           <>
-            {concepts && concepts.length > 0 && concepts.map((item, i) => (
+            {concepts.length > 0 && concepts.map((item:Concept, i:number) => (
               <ConceptListItem key={i} item={item} activeItemId={activeItemId} setActiveItemId={setActiveItemId} />
             ))}
           </>
@@ -82,7 +83,13 @@ function ConceptListHead() {
   );
 }
 
-function ConceptListItem({ item, activeItemId, setActiveItemId }) {
+type ConceptListItemProps = {
+  item: Concept,
+  activeItemId: string,
+  setActiveItemId: React.Dispatch<React.SetStateAction<string>>
+}
+
+function ConceptListItem({ item, activeItemId, setActiveItemId }: ConceptListItemProps): JSX.Element {
   const [concept, setConcept] = useState(item.concept);
   const [definition, setDefinition] = useState(item.definition);
   const [editing, setEditing] = useState(false);
@@ -109,25 +116,25 @@ function ConceptListItem({ item, activeItemId, setActiveItemId }) {
       <li className="selected rounded flex justify-between border border-sky-400 focus:outline-sky-500 focus:outline-2  focus:border-transparent">
         <div className="concept basis-[40ch] text-vertical">
           <input value={concept} className="w-full px-2 py-1 rounded-e-none focus:outline-none focus:border focus:border-l-2 focus:border-y-2 focus:border-sky-400 ring-sky-400" onKeyDown={(e) => {
-              if (['Enter'].includes(e.key)) handleSave()
-            }}
+            if (['Enter'].includes(e.key)) handleSave()
+          }}
             onChange={(e) => setConcept(e.target.value)}
           />
         </div>
         <div className="definition flex basis-full">
           <input value={definition}
-          className={`
+            className={`
             basis-full px-2 py-1 rounded-s-none
             focus:outline-none focus:border
             focus:border-y-2 focus:border-r-2 focus:border-sky-400
           `}
-          onKeyDown={(e) => {
+            onKeyDown={(e) => {
               if (['Enter'].includes(e.key)) handleSave()
             }}
             onChange={(e) => setDefinition(e.target.value)}
           />
           <span className="bg-sky-400 min-w-[32px] text-center"
-            tabIndex="0" onKeyDown={(e) => {
+            tabIndex={0} onKeyDown={(e) => {
               if (['Enter', ' '].includes(e.key)) handleSave()
             }} onClick={handleSave}>ⓧ</span>
         </div>

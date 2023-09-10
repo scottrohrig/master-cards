@@ -74,11 +74,9 @@ function Header({ pages }: any) {
   const [toggled, setMenuToggled] = React.useState(false);
   const navigate = useNavigate();
   const handleToggle = () => {
-    console.log('toggling', toggled);
     setMenuToggled(!toggled);
   }
   const showMenu = toggled ? 'flex' : 'hidden';
-  console.log('showmenu', showMenu);
 
   return (
     <header className="flex justify-between bg-sky-400 px-4 py-2">
@@ -102,7 +100,7 @@ function Header({ pages }: any) {
         </ul>
         <MenuButton onClick={handleToggle} />
         <ul
-          className={`absolute right-0 top-14 ${showMenu} flex-col min-h-[100vh] w-1/2 bg-slate-50`}
+          className={`absolute right-0 top-14 ${showMenu} flex-col min-h-[100vh] w-1/2 bg-white border-l border-l-sky-400`}
           >
           {pages.map(
             (p: any) => <Link
