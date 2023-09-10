@@ -26,7 +26,7 @@ const ConceptList = () => {
 
   return (
     <div className="border rounded border-sky-400 bg-sky-100 p-2">
-      <h2 className="font-bold text-xl text-amber-600" onClick={() => { navigate('/categories') }}>{category.title}</h2>
+      <h2 className="font-bold text-xl text-amber-500 mb-1" onClick={() => { navigate('/categories') }}>{category.title}</h2>
       <SetList categoryId={category.id} />
     </div>
   );
@@ -37,6 +37,7 @@ export default ConceptList;
 function SetList({ categoryId }) {
   const [concepts, setConcepts] = useState(undefined);
   const [activeItemId, setActiveItemId] = useState('');
+  const navigate = useNavigate();
   const { data, isLoading } = useQuery(['concepts'], getConcepts);
   const addConceptMutation = useAddConcept();
   useEffect(() => {
@@ -52,7 +53,12 @@ function SetList({ categoryId }) {
 
   return (
     <div className="set-list">
-      <Button tabIndex="0" onClick={handleClick}>new concept</Button>
+      <div className="flex justify-end gap-1">
+      <Button tabIndex="0" className="text-white" onClick={handleClick}>new concept</Button>
+      {/* <Button className="bg-transparent text-sky-500 border-spacing-1 border-2 rounded-md border-sky-400 p-[4px]" tabIndex="0" onClick={()=> {navigate('/quiz')}}>Quiz Yourself</Button> */}
+      <Button className="bg-transparent border-2 border-sky-400 text-amber-500 p-[4px]" tabIndex="0" onClick={()=> {navigate('/quiz')}}>Quiz Yourself</Button>
+
+      </div>
       <ConceptListHead />
       <ul className="flex flex-col gap-3">
         {isLoading ? <>loading...</> : (
@@ -100,20 +106,29 @@ function ConceptListItem({ item, activeItemId, setActiveItemId }) {
 
   if (editing) {
     return (
-      <li className="selected outline outline-1 rounded flex justify-between border border-sky-400">
-        {/* <span>{item.id}</span> */}
+      <li className="selected rounded flex justify-between border border-sky-400 focus:outline-sky-500 focus:outline-2  focus:border-transparent">
         <div className="concept basis-[40ch] text-vertical">
-          <input value={concept} className="w-full px-2 py-1"
+          <input value={concept} className="w-full px-2 py-1 rounded-e-none focus:outline-none focus:border focus:border-l-2 focus:border-y-2 focus:border-sky-400 ring-sky-400" onKeyDown={(e) => {
+              if (['Enter'].includes(e.key)) handleSave()
+            }}
             onChange={(e) => setConcept(e.target.value)}
           />
         </div>
         <div className="definition flex basis-full">
-          <input value={definition} className="basis-full px-2 py-1"
+          <input value={definition}
+          className={`
+            basis-full px-2 py-1 rounded-s-none
+            focus:outline-none focus:border
+            focus:border-y-2 focus:border-r-2 focus:border-sky-400
+          `}
+          onKeyDown={(e) => {
+              if (['Enter'].includes(e.key)) handleSave()
+            }}
             onChange={(e) => setDefinition(e.target.value)}
           />
           <span className="bg-sky-400 min-w-[32px] text-center"
             tabIndex="0" onKeyDown={(e) => {
-              if (['enter', ' '].includes(e.key)) handleSave()
+              if (['Enter', ' '].includes(e.key)) handleSave()
             }} onClick={handleSave}>ⓧ</span>
         </div>
       </li>
@@ -121,17 +136,16 @@ function ConceptListItem({ item, activeItemId, setActiveItemId }) {
   }
   return (
     <li onClick={handleEdit} className="concept-li flex rounded items-center justify-between border border-sky-400 text-sky-700">
-      {/* <span>{item.id}</span> */}
       <div className="concept basis-[40ch] items-center">
-        <p className='px-2 py-1'>
+        <p className='px-2 py-1' tabIndex={0}>
           {concept}
         </p>
       </div>
-      <div className="definition flex basis-full">
-        <p className="basis-full px-2 py-1">
+      <div className="definition flex basis-full overflow-x-auto">
+        <p className="basis-full px-2 py-1 overflow-hidden whitespace-nowrap" tabIndex={0}>
           {definition}
         </p>
-        <span className=" min-w-[32px] text-center" tabIndex="0">✎</span>
+        <span className=" min-w-[32px] text-center" tabIndex={0}>✎</span>
       </div>
     </li>
   );

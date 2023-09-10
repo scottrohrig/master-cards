@@ -55,7 +55,7 @@ export default function Root() {
   )
 }
 
-// URL: / 
+// URL: /
 function App() {
   const navPages = ['categories', 'quiz', 'error']
   return (
@@ -73,6 +73,13 @@ function App() {
 function Header({ pages }: any) {
   const [toggled, setMenuToggled] = React.useState(false);
   const navigate = useNavigate();
+  const handleToggle = () => {
+    console.log('toggling', toggled);
+    setMenuToggled(!toggled);
+  }
+  const showMenu = toggled ? 'flex' : 'hidden';
+  console.log('showmenu', showMenu);
+
   return (
     <header className="flex justify-between bg-sky-400 px-4 py-2">
       <div className="flex gap-2">
@@ -81,8 +88,8 @@ function Header({ pages }: any) {
           () => { navigate('/categories') }
         }>BRAND</div>
       </div>
-      <nav>
-        <ul className="none md:flex gap-2">
+      <nav className='flex gap-1'>
+        <ul className="hidden md:flex gap-2">
           {pages.map(
             (p: any) => <Link
               className="text-sky-700"
@@ -93,14 +100,16 @@ function Header({ pages }: any) {
             </Link>
           )}
         </ul>
+        <MenuButton onClick={handleToggle} />
         <ul
-          className="absolute right-0 top-10 flex flex-col min-h-[100vh] w-1/2 bg-white"
+          className={`absolute right-0 top-14 ${showMenu} flex-col min-h-[100vh] w-1/2 bg-slate-50`}
           >
           {pages.map(
             (p: any) => <Link
-              className="text-sky-700"
+              className="text-sky-700 px-4 py-2 border-b border-sky-400 hover:bg-slate-100"
               to={`/${p}`}
               key={p}
+              onClick={() => setMenuToggled(false)}
             >
               {p}
             </Link>
@@ -108,5 +117,19 @@ function Header({ pages }: any) {
         </ul>
       </nav>
     </header>
+  )
+}
+
+function MenuButton (
+  { onClick }: { onClick?: React.MouseEventHandler<HTMLDivElement> | undefined }
+) {
+  return (
+    <div className="md:hidden w-10 h-10 p-1 flex flex-col justify-between cursor-pointer"
+      onClick={onClick}
+    >
+      <div className="w-full h-1 bg-white rounded-lg"></div>
+      <div className="w-full h-1 bg-white rounded-lg"></div>
+      <div className="w-full h-1 bg-white rounded-lg"></div>
+    </div>
   )
 }

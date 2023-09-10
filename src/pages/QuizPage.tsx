@@ -6,29 +6,40 @@ import {
   getOrAddStat
 } from '../api';
 import Button from '../components/Button';
+import { Category, Concept } from '../types';
 import Page from './Page';
 
 export default function QuizPage() {
-  const [category, setCategory] = useState(null);
+  const [category, setCategory] = useState({ id: 0, title: 'all' });
   const { data: categories, isLoading: isCategoriesLoading } = useQuery(['categories'], getCategories);
   const { data: concepts, isLoading: isCardsLoading } = useQuery(['concepts'], getConcepts);
-  const [cards, setCards] = useState(undefined);
+  const [cards, setCards] = useState([]);
   const [selectedCardId, setSelectedCardId] = useState(0);
 
   const handleSelectChange = (e) => {
-    const newSelection = categories.filter(c => c.title === e.target.value)[0]
+    if (e.target.value === 'all') {
+      setCategory({ id: 0, title: 'all' });
+      return;
+    }
+    const newSelection = categories.find((item: Category) => item.title === e.target.value);
     setCategory(newSelection);
   };
 
   React.useEffect(() => {
-    if (concepts && categories) {
-      const filteredConcepts = concepts.filter(item => item.categoryId === category?.id)
-      setCards(filteredConcepts)
+    if (concepts) {
+      if (category.title === 'all') {
+        setCards(concepts);
+        return;
+      }
+      const filteredConcepts = concepts.filter((item: Concept) => item.categoryId === category.id);
+      setCards(filteredConcepts);
     }
-  }, [concepts, category]);
+  }, [category]);
+
+  if (isCategoriesLoading) return <p>Loading...</p>;
 
   return (
-    <Page >
+    <Page>
       <h2 className='font-bold text-2xl'>Quiz Page</h2>
       <div className='p-2 flex justify-between'>
         <label htmlFor='category-select'>Category</label>
@@ -36,10 +47,11 @@ export default function QuizPage() {
           id='category-select'
           name='category-select'
           placeholder='Select a Category'
-          value={category?.title}
+          value={category.title}
           onChange={handleSelectChange}
         >
-          {!isCategoriesLoading && categories.map(c => (
+          <option value='all'>All</option>
+          {categories.map(c => (
             <option
               value={c.title}
               key={c.title}
@@ -54,11 +66,15 @@ export default function QuizPage() {
           <p>[timer]</p>
         </div>
       </div>
-      <Card
-        item={!isCardsLoading && cards?.length > 0 && cards[selectedCardId]}
-        increment={() => { setSelectedCardId(p => ((selectedCardId + 1) % (cards?.length || 1))) }}
-        idx={selectedCardId + 1}
-      />
+      {
+        (cards.length === 0)
+          ? <PlaceholderCard />
+          : <Card
+            item={!isCardsLoading && cards && cards?.length > 0 && cards[selectedCardId]}
+            increment={() => { setSelectedCardId(p => ((selectedCardId + 1) % (cards?.length || 1))) }}
+            idx={selectedCardId + 1}
+          />
+      }
     </Page >
   );
 }
@@ -69,11 +85,19 @@ function calcAccuracy(acc, count) {
   return out;
 }
 
-function Card({ item, increment, idx }) {
+function PlaceholderCard() {
+  return (
+
+    <div
+      className="mx-auto my-2 items-center justify-center flex h-96 sm:w-96 sm:h-64 text-2xl sm:text-lg text-amber-500 border border-b-4 rounded border-sky-400" >Select a Category</div>
+  )
+}
+
+function Card({ item, increment, idx }: { item: Concept, increment?: object, idx?: number }) {
   const [state, setState] = useState(true);
   const [debug, setDebug] = useState(false);
   const stats = { conceptId: '2', countAccurate: 2, totalAttempts: 3 };
-  const { data: stat, isLoading } = useQuery(['stat', item?.id], () => getOrAddStat(item?.id));
+  const { data: stat, isLoading } = useQuery(['stat', item.id], () => getOrAddStat(item.id));
   const baseDebug = 'border-2 rounded '
   const bodyDebug = debug && baseDebug + 'border-orange-400'
   const accDebug = debug && baseDebug + 'border-green-400'
@@ -96,7 +120,7 @@ function Card({ item, increment, idx }) {
       >
         <h2 className='font-light text-sm'>Card {idx}</h2>
         <div
-          className="flex items-center w-full text-center basis-full"
+          className="flex items-center w-full text-center basis-full break-all"
           onClick={handleClick}
         >
           {state
@@ -117,7 +141,7 @@ function Card({ item, increment, idx }) {
         </div>
         <Button
           className="text-zinc-50 uppercase"
-          onClick={() => { setState(true); increment() }}
+          onClick={() => { setState(true); increment(); }}
         >
           <p>Next</p>
         </Button>
