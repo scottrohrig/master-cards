@@ -3,7 +3,8 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../App.css';
 import {
-  getCategories, useAddCategory, useDeleteMutation, useUpdateCategory
+  getCategories,
+  useAddCategory, useDeleteMutation, useUpdateCategory
 } from '../api';
 import Button from '../components/Button';
 import Page from './Page';
@@ -141,7 +142,7 @@ const CategoriesListItem = ({
 };
 
 const CategoriesList = () => {
-  const { data: categories, isLoading } = useQuery(['categories'], getCategories);
+  const { data: categories, isLoading, error } = useQuery(['categories'], getCategories);
   const deleteCategoryMutation = useDeleteMutation();
   const updateCategoryMutation = useUpdateCategory();
   const [activeItemId, setActiveItemId] = React.useState('');
@@ -153,7 +154,9 @@ const CategoriesList = () => {
 
   const navigate = useNavigate();
 
-  if (isLoading) return <div>Loading...</div>
+  if (isLoading) return <div className="px-4 py-2 bg-red-300 text-red-800">Loading...</div>
+
+  if (error) return <div className="p-4 bg-red-400 text-red-800">{JSON.stringify(error)}</div>;
 
   return (<div className="categories-list max-w-xl mx-auto">
     <h3 className="font-bold text-xl">Categories</h3>

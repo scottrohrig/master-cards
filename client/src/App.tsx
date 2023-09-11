@@ -1,18 +1,18 @@
-import React from 'react';
-import './App.css';
 import {
-  createBrowserRouter,
-  RouterProvider,
-  Outlet,
+  QueryClient, QueryClientProvider, useQuery
+} from '@tanstack/react-query';
+import React from 'react';
+import {
   Link,
+  Outlet,
+  RouterProvider,
+  createBrowserRouter,
   useNavigate,
 } from 'react-router-dom';
-import {
-  useQuery, useMutation, QueryClient, QueryClientProvider,
-} from '@tanstack/react-query';
+import './App.css';
+import ConceptList, { loader as categoryLoader } from './components/ConceptList';
 import CategoriesPage from './pages/CategoriesPage';
 import QuizPage from './pages/QuizPage';
-import ConceptList, { loader as categoryLoader } from './components/ConceptList';
 
 import ErrorPage from './components/ErrorPage';
 
@@ -57,16 +57,16 @@ export default function Root() {
 
 // URL: /
 function App() {
-  const navPages = ['categories', 'quiz', 'error']
+  const navPages = ['categories', 'quiz', 'error'];
   return (
-    <main className="border-l-4 border-sky-400 min-h-screen">
-      <Header pages={navPages} />
-      <article className="px-4 pt-2">
-        <QueryClientProvider client={queryClient} >
+    <QueryClientProvider client={queryClient} >
+      <main className="border-l-4 border-sky-400 min-h-screen">
+        <Header pages={navPages} />
+        <article className="px-4 pt-2">
           <Outlet />
-        </QueryClientProvider>
-      </article>
-    </main>
+        </article>
+      </main>
+    </QueryClientProvider>
   )
 }
 
@@ -77,14 +77,23 @@ function Header({ pages }: any) {
     setMenuToggled(!toggled);
   }
   const showMenu = toggled ? 'flex' : 'hidden';
+  const { data: user, isLoading, isError } = useQuery(['me'], async () => {
+    const res = await fetch('http://localhost:5001/api/user/1');
+    return res.json();
+  });
 
   return (
     <header className="flex justify-between bg-sky-400 px-4 py-2">
-      <div className="flex gap-2">
-        <div className="">LOGO</div>
-        <div className="text-zinc-50 pointer" onClick={
+      <div className="flex">
+        <div className="text-sky-900 font-bold">MASTER</div>
+        <div className="text-zinc-50 font-extrabold pointer" onClick={
           () => { navigate('/categories') }
-        }>BRAND</div>
+        }>CARDS</div>
+          <span className="text-zinc-50 font-extrabold">.</span>
+        <div className="flex ms-4 gap-4 items-center text-sky-900 font-light text-xs">
+          <div>|</div>
+        <div className="">Hello {isLoading ? '...' : user?.name}</div>
+        </div>
       </div>
       <nav className='flex gap-1'>
         <ul className="hidden md:flex gap-2">
@@ -99,30 +108,34 @@ function Header({ pages }: any) {
           )}
         </ul>
         <MenuButton onClick={handleToggle} />
-        <ul
-          className={`absolute right-0 top-14 ${showMenu} flex-col min-h-[100vh] w-1/2 bg-white border-l border-l-sky-400`}
+        <div
+          className={`absolute right-0 top-10 p-4 ${showMenu} flex-col min-h-[95vh] w-1/2 bg-white border-l-2 border-l-sky-400 `}
+        >
+          <ul
+            className="flex flex-col border border-sky-400 rounded"
           >
-          {pages.map(
-            (p: any) => <Link
-              className="text-sky-700 px-4 py-2 border-b border-sky-400 hover:bg-slate-100"
-              to={`/${p}`}
-              key={p}
-              onClick={() => setMenuToggled(false)}
-            >
-              {p}
-            </Link>
-          )}
-        </ul>
+            {pages.map(
+              (p: any) => <Link
+                className="text-sky-700 px-4 py-2 border-b border-sky-400 hover:bg-slate-100"
+                to={`/${p}`}
+                key={p}
+              // onClick={() => setMenuToggled(false)}
+              >
+                {p}
+              </Link>
+            )}
+          </ul>
+        </div>
       </nav>
-    </header>
+    </header >
   )
 }
 
-function MenuButton (
+function MenuButton(
   { onClick }: { onClick?: React.MouseEventHandler<HTMLDivElement> | undefined }
 ) {
   return (
-    <div className="md:hidden w-10 h-10 p-1 flex flex-col justify-between cursor-pointer"
+    <div className="md:hidden w-8 h-6 p-1 flex flex-col justify-between cursor-pointer"
       onClick={onClick}
     >
       <div className="w-full h-1 bg-white rounded-lg"></div>

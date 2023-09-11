@@ -1,5 +1,5 @@
 run = "vite"
-entrypoint = "src/App.tsx"
+entrypoint = "client/src/App.tsx"
 
 hidden = [".config", "tsconfig.json", "tsconfig.node.json", "vite.config.js", ".gitignore"]
 
@@ -23,4 +23,4 @@ language = "nodejs"
 pattern = "**/{*.js,*.jsx,*.ts,*.tsx}"
 
   [languages.javascript.languageServer]
-start = "./node_modules/.bin/typescript-language-server --stdio"
+start = "./client/node_modules/.bin/typescript-language-server --stdio"

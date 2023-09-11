@@ -2,14 +2,26 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient } from "./App";
 import { Category, Concept, Stat } from "./types";
 
+const BASE_URL = 'http://localhost:5001/api';
+
 const randId = () => Math.floor(Math.random() * 999) + 1
 
-export const getCategories = () => {
+export const getCategoriesLS = () => {
   const categories = localStorage.getItem('categories');
   return categories ? JSON.parse(categories) : [];
 };
 
-export const addCategory = (newCategory: Category) => {
+export const getCategories = async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/categories`);
+      return res.json();
+    } catch (error) {
+      console.log(error);
+      return [];
+    }
+};
+
+export const addCategoryLS = (newCategory: Category) => {
   try {
     newCategory.id = String(randId());
     const prevCategories = getCategories();
@@ -23,6 +35,22 @@ export const addCategory = (newCategory: Category) => {
     );
   } catch (err) {
     console.log('failed setting storage', err)
+  }
+};
+
+export const addCategory = async (newCategory: Category) => {
+  try {
+    const res = await fetch(`${BASE_URL}/categories`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newCategory),
+    });
+    return res.json();
+  } catch (error) {
+    console.log(error);
+    return [];
   }
 };
 
